@@ -68,6 +68,7 @@ class Model(torch.nn.Module):
         z2 = F.normalize(z2)
         return torch.mm(z1, z2.t())
 
+    # NT-Xent对比学习损失
     def semi_loss(self, z1: torch.Tensor, z2: torch.Tensor):
         f = lambda x: torch.exp(x / self.tau)
         refl_sim = f(self.sim(z1, z1))
