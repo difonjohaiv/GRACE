@@ -43,7 +43,7 @@ def test(model: Model, x, edge_index, y, final=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='DBLP')
+    parser.add_argument('--dataset', type=str, default='Cora')
     parser.add_argument('--gpu_id', type=int, default=0)
     parser.add_argument('--config', type=str, default='config.yaml')
     args = parser.parse_args()

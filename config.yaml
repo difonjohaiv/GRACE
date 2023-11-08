@@ -11,7 +11,7 @@ Cora:
   drop_feature_rate_1: 0.3
   drop_feature_rate_2: 0.4
   tau: 0.4
-  num_epochs: 200
+  num_epochs: 50
   weight_decay: 0.00001
 CiteSeer:
   seed: 38108
