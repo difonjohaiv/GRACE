@@ -75,10 +75,7 @@ if __name__ == '__main__':
         assert name in ['Cora', 'CiteSeer', 'PubMed', 'DBLP']
         name = 'dblp' if name == 'DBLP' else name
 
-        return (CitationFull if name == 'dblp' else Planetoid)(
-            path,
-            name,
-            T.NormalizeFeatures())
+        return Planetoid(root=path, name=name, transform=T.NormalizeFeatures())
 
     path = osp.join(osp.expanduser('~'), 'datasets', args.dataset)
     dataset = get_dataset(path, args.dataset)
@@ -87,11 +84,15 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     data = data.to(device)
 
-    encoder = Encoder(dataset.num_features, num_hidden, activation,
-                      base_model=base_model, k=num_layers).to(device)
+    encoder = Encoder(dataset.num_features,
+                      num_hidden,
+                      activation,
+                      base_model=base_model,
+                      k=num_layers).to(device)
     model = Model(encoder, num_hidden, num_proj_hidden, tau).to(device)
-    optimizer = torch.optim.Adam(
-        model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    optimizer = torch.optim.Adam(model.parameters(),
+                                 lr=learning_rate,
+                                 weight_decay=weight_decay)
 
     start = t()
     prev = start
