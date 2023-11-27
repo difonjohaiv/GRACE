@@ -1,15 +1,17 @@
 import argparse
-import os.path as osp
+# import os.path as osp
 import random
 from time import perf_counter as t
+import time
+import numpy as np
 import yaml
 from yaml import SafeLoader
 
 import torch
-import torch_geometric.transforms as T
+# import torch_geometric.transforms as T
 import torch.nn.functional as F
 import torch.nn as nn
-from torch_geometric.datasets import Planetoid, CitationFull
+# from torch_geometric.datasets import Planetoid, CitationFull
 from torch_geometric.utils import dropout_adj
 from torch_geometric.nn import GCNConv
 
@@ -96,11 +98,19 @@ if __name__ == '__main__':
 
     start = t()
     prev = start
+    dur = []
     for epoch in range(1, num_epochs + 1):
+        if epoch >= 1:
+            t0 = time.time()
         loss = train(model, data.x, data.edge_index, data.edge_attr)
 
         now = t()
-        print(f'(T) | Epoch={epoch:03d}, loss={loss:.4f}, '
+
+        if epoch >= 1:
+            dur.append(time.time() - t0)
+
+        print(f'(T) | Epoch={epoch:03d}, loss={loss:.4f},'
+              f'Time={np.mean(dur):.4f},'
               f'this epoch {now - prev:.4f}, total {now - start:.4f}')
         prev = now
 
