@@ -24,10 +24,12 @@ def train(model: Model, x, edge_index, edge_weight):
     optimizer.zero_grad()
     edge_index_1, edge_attr_1 = dropout_adj(edge_index,
                                             edge_weight,
-                                            p=drop_edge_rate_1)[0]
+                                            p=drop_edge_rate_1,
+                                            force_undirected=True)
     edge_index_2, edge_attr_2 = dropout_adj(edge_index,
                                             edge_weight,
-                                            p=drop_edge_rate_2)[0]
+                                            p=drop_edge_rate_2,
+                                            force_undirected=True)
     x_1 = drop_feature(x, drop_feature_rate_1)
     x_2 = drop_feature(x, drop_feature_rate_2)
     z1 = model(x_1, edge_index_1, edge_attr_1)
