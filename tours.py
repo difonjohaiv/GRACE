@@ -19,7 +19,7 @@ from eval import label_classification
 from prepare_graph import get_graph
 
 
-def train(model: Model, x, edge_index):
+def train(model: Model, x, edge_index, edge_weight):
     model.train()
     optimizer.zero_grad()
     edge_index_1 = dropout_adj(edge_index, p=drop_edge_rate_1)[0]
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     start = t()
     prev = start
     for epoch in range(1, num_epochs + 1):
-        loss = train(model, data.x, data.edge_index)
+        loss = train(model, data.x, data.edge_index, data.edge_attr)
 
         now = t()
         print(f'(T) | Epoch={epoch:03d}, loss={loss:.4f}, '

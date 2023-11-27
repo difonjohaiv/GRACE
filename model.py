@@ -39,9 +39,9 @@ class Encoder(torch.nn.Module):
 
         self.activation = activation
 
-    def forward(self, x: torch.Tensor, edge_index: torch.Tensor):
+    def forward(self, x: torch.Tensor, edge_index: torch.Tensor, edge_weight: torch.Tensor):
         for i in range(self.k):
-            x = self.activation(self.conv[i](x, edge_index))
+            x = self.activation(self.conv[i](x, edge_index, edge_weight))
         return x
 
 
@@ -56,8 +56,8 @@ class Model(torch.nn.Module):
         self.fc2 = torch.nn.Linear(num_proj_hidden, num_hidden)
 
     def forward(self, x: torch.Tensor,
-                edge_index: torch.Tensor) -> torch.Tensor:
-        return self.encoder(x, edge_index)
+                edge_index: torch.Tensor, edge_weight: torch.Tensor) -> torch.Tensor:
+        return self.encoder(x, edge_index, edge_weight)
 
     def projection(self, z: torch.Tensor) -> torch.Tensor:
         z = F.elu(self.fc1(z))
