@@ -54,7 +54,7 @@ def test(model: Model, x, edge_index, edge_weight, y, final=False):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, default='Thucnews')
-    parser.add_argument('--gpu_id', type=int, default=0)
+    parser.add_argument('--gpu_id', type=int, default=1)
     parser.add_argument('--config', type=str, default='config.yaml')
     args = parser.parse_args()
 
@@ -84,6 +84,10 @@ if __name__ == '__main__':
     data = get_graph()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    if device == "cuda":
+        print("using cuda")
+    else:
+        print("using cpu")
     data = data.to(device)
 
     encoder = Encoder(data.x.shape[1],
