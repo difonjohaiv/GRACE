@@ -42,9 +42,9 @@ def train(model: Model, x, edge_index, edge_weight):
     return loss.item()
 
 
-def test(model: Model, x, edge_index, y, final=False):
+def test(model: Model, x, edge_index, edge_weight, y, final=False):
     model.eval()
-    z = model(x, edge_index)
+    z = model(x, edge_index, edge_weight)
 
     label_classification(z, y, ratio=0.1)
 
@@ -105,4 +105,4 @@ if __name__ == '__main__':
         prev = now
 
     print("=== Final ===")
-    test(model, data.x, data.edge_index, data.y, final=True)
+    test(model, data.x, data.edge_index, data.edge_attr, data.y, final=True)
