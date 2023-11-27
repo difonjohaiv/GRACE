@@ -83,6 +83,9 @@ if __name__ == '__main__':
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     data = data.to(device)
+    x = data.x
+    edge_index = data.edge_index
+    y = data.y
 
     encoder = Encoder(dataset.num_features,
                       num_hidden,
