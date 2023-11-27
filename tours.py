@@ -26,8 +26,8 @@ def train(model: Model, x, edge_index, edge_weight):
     edge_index_2 = dropout_adj(edge_index, p=drop_edge_rate_2)[0]
     x_1 = drop_feature(x, drop_feature_rate_1)
     x_2 = drop_feature(x, drop_feature_rate_2)
-    z1 = model(x_1, edge_index_1)
-    z2 = model(x_2, edge_index_2)
+    z1 = model(x_1, edge_index_1, edge_weight)
+    z2 = model(x_2, edge_index_2, edge_weight)
 
     loss = model.loss(z1, z2, batch_size=0)
     loss.backward()
