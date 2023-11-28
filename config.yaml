@@ -15,7 +15,7 @@ Cora:
   weight_decay: 0.00001
 Thucnews:
   seed: 39788
-  learning_rate: 0.000001
+  learning_rate: 0.00002
   num_hidden: 128
   num_proj_hidden: 128
   activation: 'relu'
