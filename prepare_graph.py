@@ -17,7 +17,7 @@ def get_graph():
     y = torch.IntTensor(labels)
 
     # 读取CSV文件并解析内容
-    with open('thucnews_title.csv', 'r') as file:
+    with open('adj.csv', 'r') as file:
         reader = csv.reader(file, delimiter=' ')
         content = list(reader)
 

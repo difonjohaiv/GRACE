@@ -1,15 +1,17 @@
 import argparse
-import os.path as osp
+# import os.path as osp
 import random
 from time import perf_counter as t
+import time
+import numpy as np
 import yaml
 from yaml import SafeLoader
 
 import torch
-import torch_geometric.transforms as T
+# import torch_geometric.transforms as T
 import torch.nn.functional as F
 import torch.nn as nn
-from torch_geometric.datasets import Planetoid, CitationFull
+# from torch_geometric.datasets import Planetoid, CitationFull
 from torch_geometric.utils import dropout_adj
 from torch_geometric.nn import GCNConv
 
@@ -52,7 +54,7 @@ def test(model: Model, x, edge_index, edge_weight, y, final=False):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, default='Thucnews')
-    parser.add_argument('--gpu_id', type=int, default=0)
+    parser.add_argument('--gpu_id', type=int, default=1)
     parser.add_argument('--config', type=str, default='config.yaml')
     args = parser.parse_args()
 
@@ -82,6 +84,10 @@ if __name__ == '__main__':
     data = get_graph()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    if str(device) == "cuda":
+        print("using cuda")
+    else:
+        print("using cpu")
     data = data.to(device)
 
     encoder = Encoder(data.x.shape[1],
@@ -96,13 +102,41 @@ if __name__ == '__main__':
 
     start = t()
     prev = start
+    dur = []
+
+    counter = 0
+    min_train_loss = 100
+    early_stop_counter = 100
+    best_t = -1
+
     for epoch in range(1, num_epochs + 1):
+        if epoch >= 1:
+            t0 = time.time()
         loss = train(model, data.x, data.edge_index, data.edge_attr)
 
         now = t()
-        print(f'(T) | Epoch={epoch:03d}, loss={loss:.4f}, '
+
+        if epoch >= 1:
+            dur.append(time.time() - t0)
+
+        if loss < min_train_loss:
+            counter = 0
+            min_train_loss = loss
+            best_t = epoch
+            torch.save(model.state_dict(), 'best_model.pkl')
+        else:
+            counter += 1
+
+        if counter >= early_stop_counter:
+            print('early stop')
+            break
+
+        print(f'(T) | Epoch={epoch:03d}, loss={loss:.4f},'
+              f'Time={np.mean(dur):.4f},'
               f'this epoch {now - prev:.4f}, total {now - start:.4f}')
         prev = now
 
     print("=== Final ===")
+    print('Loading {}th epoch'.format(best_t))
+    model.load_state_dict(torch.load('best_model.pkl'))
     test(model, data.x, data.edge_index, data.edge_attr, data.y, final=True)
