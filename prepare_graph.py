@@ -12,7 +12,7 @@ def get_graph():
     with open("content_embedding_m3e_base.pkl", 'rb') as f:
         features = pickle.load(f)
 
-    # 加载标签
+    # 加载标签 
     labels = get_labels()
     y = torch.IntTensor(labels)
 
@@ -42,11 +42,16 @@ def get_graph():
     graph = Data(x=features, edge_index=edge_index, edge_attr=edge_weight, y=y)
 
     # 有向到无向图
-    undir_index, undir_weight = to_undirected(edge_index=graph.edge_index,
-                                              edge_attr=graph.edge_attr)
+    if graph.is_directed():
+        print("有向图!!!!!!!")
+        print("正在处理.....")
+        undir_index, undir_weight = to_undirected(edge_index=graph.edge_index,
+                                                edge_attr=graph.edge_attr)
 
-    graph.edge_index, graph.edge_attr = undir_index, undir_weight
+        graph.edge_index, graph.edge_attr = undir_index, undir_weight
 
     print("是否为无向图:", graph.is_undirected())
 
     return graph
+
+get_graph()

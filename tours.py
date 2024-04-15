@@ -86,6 +86,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if str(device) == "cuda":
         print("using cuda")
+        print(torch.cuda.get_device_name())
     else:
         print("using cpu")
     data = data.to(device)
